@@ -1,45 +1,60 @@
 import java.util.Scanner;
 
-public class Task4 {
+public class Task4CurrencyConverter {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String[] questions = {
-            "Q1.What is the capital of India?",
-            "Q2.Who is the father of java?",
-            "Q3.Which type of data type for true/false?",
-            "Q4.Java developed by?",
-            "Q5.Keyword to inherit a class?"
-        };
-        String[][] options ={
-            {"1.Delhi","2.Mumbai","3.kolkata","4.chennai"},
-            {"1.Jmaes Gosling" , "2.Dennis Ritchie" , "3.Bjarne Stroustrup" , "4,Guido van Rossum"},
-            {"1.int" ,"2.boolean" , "3.String","4.char"},
-            {"1.Microsoft" , "2.Sum Microsystem","3.Google","4.Oracle"},
-            {"1.this", "2.super","3.extends","4.implements"}
-        };
-        int[] answers = {1,1,2,2,3};
-        int score = 0;
 
-        System.out.println("===== Quiz Time!=====");
-
-        for(int i =0;i<questions.length;i++){
-            System.out.println("\n" + questions[i]);
-            for(String opt : options[i]) System.out.println(opt);
-            System.out.println("Enter option number:");
-            int userAns = sc.nextInt();
-            if(userAns == answers[i]){
-                System.out.println("Correct!");
-                score++;
-            } else{
-                System.out.println("Wrong!");
-            }
+        System.out.println("Welcome to Currency Converter!");
+        System.out.println("Supported Currencies: USD, INR, EUR, GBP");
+        
+        System.out.print("Enter amount: ");
+        double amount = sc.nextDouble();
+        
+        System.out.print("From currency (USD/INR/EUR/GBP): ");
+        String from = sc.next().toUpperCase();
+        
+        System.out.print("To currency (USD/INR/EUR/GBP): ");
+        String to = sc.next().toUpperCase();
+        
+        double convertedAmount = convertCurrency(amount, from, to);
+        
+        if (convertedAmount >= 0) {
+            System.out.printf("%.2f %s = %.2f %s\n", amount, from, convertedAmount, to);
+        } else {
+            System.out.println("Invalid currency entered!");
         }
-
-        System.out.println("\nyour Score:" + score + "/n"+ questions.length);
-        if(score>=4)System.out.println("Excellent");
-        else if(score>=2) System.out.println("Good, can improve!");
-        else System.out.println("Better luck next time!");
+        
         sc.close();
     }
     
+    public static double convertCurrency(double amount, String from, String to) {
+        // Exchange rates (example rates)
+        double usdToInr = 83.0;
+        double usdToEur = 0.93;
+        double usdToGbp = 0.82;
+        
+        double inrToUsd = 1 / usdToInr;
+        double eurToUsd = 1 / usdToEur;
+        double gbpToUsd = 1 / usdToGbp;
+        
+        double amountInUsd = 0;
+        
+        // Convert from source to USD first
+        switch (from) {
+            case "USD": amountInUsd = amount; break;
+            case "INR": amountInUsd = amount * inrToUsd; break;
+            case "EUR": amountInUsd = amount * eurToUsd; break;
+            case "GBP": amountInUsd = amount * gbpToUsd; break;
+            default: return -1;
+        }
+        
+        // Convert from USD to target currency
+        switch (to) {
+            case "USD": return amountInUsd;
+            case "INR": return amountInUsd * usdToInr;
+            case "EUR": return amountInUsd * usdToEur;
+            case "GBP": return amountInUsd * usdToGbp;
+            default: return -1;
+        }
+    }
 }
